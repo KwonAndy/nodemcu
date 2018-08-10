@@ -23,9 +23,10 @@ import ntptime, utime
 from machine import RTC
 from time import sleep
 
-seconds = ntptime.time()
-rtc = RTC()
-rtc.datetime(utime.localtime(seconds))
+# grabs real time from the internet
+# seconds = ntptime.time()
+# rtc = RTC()
+# rtc.datetime(utime.localtime(seconds))
 
 def time():
     body = """<html>
@@ -34,7 +35,9 @@ def time():
 <p>%s</p>
 </body>
 </html>
-""" % str(rtc.datetime())
+""" % str("I'm hungry")
+#WAS % str(rtc.datetime())
+
 
     return response_template % body
 
@@ -43,10 +46,36 @@ def dummy():
 
     return response_template % body
 
+
+import machine
+light_pin = machine.Pin(5, machine.Pin.OUT)
+
+def light_on():
+    light_pin.value(1)
+
+    body = "you turned the light on?"
+
+    return response_template % body
+
+def light_off():
+    light_pin.value(0)
+
+    body = "the light is off now?"
+
+    return response_template % body
+
+def switch():
+    body = "{state: " + str(pin.value()) + "}"
+    return response_template % body
+
 handlers = {
     'time': time,
     'dummy': dummy,
+    'light_on': light_on,
+    'light_off': light_off,
+    'switch': switch,
 }
+
 
 def main():
     s = socket.socket()
